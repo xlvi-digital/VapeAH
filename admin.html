@@ -244,27 +244,45 @@
         }
 
         .btn-icon {
-            width: 35px;
-            height: 35px;
-            display: flex;
+            width: auto;
+            height: 38px;
+            padding: 0 12px;
+            display: inline-flex;
+            gap: 6px;
             align-items: center;
             justify-content: center;
             border-radius: 8px;
             cursor: pointer;
-            transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .btn-edit {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border-color: rgba(59, 130, 246, 0.2);
         }
 
         .btn-edit:hover {
-            background: #3b82f6;
+            background: rgba(59, 130, 246, 0.2);
             border-color: #3b82f6;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.2);
         }
 
         .btn-delete:hover {
-            background: #ef4444;
+            background: rgba(239, 68, 68, 0.2);
             border-color: #ef4444;
+            color: #fff;
+            transform: translateY(-2px);
         }
 
         /* Excel Drop Zone Styles */
@@ -394,6 +412,215 @@
             font-weight: 700;
             text-transform: uppercase;
         }
+
+        /* Admin Toolbar */
+        .admin-toolbar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .admin-toolbar input,
+        .admin-toolbar select {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 12px 15px;
+            border-radius: var(--radius-sm);
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .admin-toolbar input:focus,
+        .admin-toolbar select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .admin-toolbar {
+                flex-direction: column;
+                top: 60px;
+            }
+
+            /* Responsive Table -> Cards */
+            table#manageTable,
+            #manageTable thead,
+            #manageTable tbody,
+            #manageTable th,
+            #manageTable td,
+            #manageTable tr {
+                display: block;
+                width: 100%;
+            }
+
+            #manageTable thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            #manageTable tr {
+                background: rgba(255, 255, 255, 0.02);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: var(--radius-md);
+                margin-bottom: 20px;
+                padding: 15px;
+            }
+
+            #manageTable td {
+                border: none;
+                position: relative;
+                padding: 10px 10px 10px 45%;
+                min-height: 48px;
+                text-align: right;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+            }
+
+            #manageTable td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 15px;
+                width: 40%;
+                text-align: left;
+                font-weight: 600;
+                color: var(--text-muted);
+                font-size: 13px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            #manageTable td:first-child {
+                text-align: center;
+                padding: 10px;
+                justify-content: center;
+            }
+
+            #manageTable td:first-child::before {
+                display: none;
+            }
+
+            .manage-img {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto;
+            }
+
+            .action-btns {
+                justify-content: flex-end;
+                margin-top: 15px;
+                width: 100%;
+                gap: 10px;
+                padding-top: 15px;
+                border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            }
+
+            .btn-icon {
+                flex: 1;
+                min-height: 44px;
+                font-size: 14px;
+            }
+        }
+
+        /* Admin Button Overrides */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid transparent;
+            text-decoration: none;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: rgba(255, 107, 0, 0.1) !important;
+            color: #ff6b00 !important;
+            border-color: rgba(255, 107, 0, 0.3) !important;
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 107, 0, 0.2) !important;
+            border-color: #ff6b00 !important;
+            color: #fff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05) !important;
+            color: var(--text-light) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-color: rgba(255, 255, 255, 0.3) !important;
+            color: #fff !important;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1) !important;
+            color: #ef4444 !important;
+            border-color: rgba(239, 68, 68, 0.3) !important;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.2) !important;
+            border-color: #ef4444 !important;
+            color: #fff !important;
+            transform: translateY(-2px) !important;
+        }
+
+        .btn-auto {
+            width: auto !important;
+        }
+
+        @media (max-width: 768px) {
+            .navbar .btn {
+                padding: 8px 12px !important;
+                font-size: 12px !important;
+            }
+
+            .admin-tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                padding-bottom: 5px;
+            }
+
+            .tab-btn {
+                white-space: nowrap;
+                padding: 12px 15px;
+            }
+
+            .modal-footer .btn {
+                width: 100% !important;
+            }
+
+            .modal-footer {
+                flex-direction: column-reverse;
+                /* Put main button on top, cancel below */
+                gap: 10px;
+            }
+        }
     </style>
 </head>
 
@@ -411,9 +638,8 @@
         <div class="container nav-container">
             <a href="index.html" class="logo">jago<span>Vape</span></a>
             <div style="display: flex; gap: 10px;">
-                <a href="index.html" class="btn btn-add" style="width: auto; padding: 10px 25px;">Lihat Website</a>
-                <button onclick="logout()" class="btn "
-                    style="width: auto; padding: 10px 25px; border-color: rgba(255, 77, 77, 0.3); color: #ff4d4d;">Keluar</button>
+                <a href="index.html" class="btn btn-secondary btn-auto">Lihat Website</a>
+                <button onclick="logout()" class="btn btn-danger btn-auto">Keluar</button>
             </div>
         </div>
     </nav>
@@ -478,8 +704,7 @@
                                 <div style="flex-grow: 1;">
                                     <input type="file" id="imageFile" accept="image/*" style="display: none;"
                                         onchange="handleFileSelect(this)">
-                                    <button type="button" class="btn btn-add"
-                                        style="margin-bottom: 8px; font-size: 13px;"
+                                    <button type="button" class="btn btn-secondary"
                                         onclick="document.getElementById('imageFile').click()">
                                         Pilih File Gambar
                                     </button>
@@ -576,8 +801,7 @@
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <h2 style="font-size: 20px;">Daftar Produk</h2>
-                        <button class="btn btn-primary" style="width: auto; padding: 10px 20px;"
-                            onclick="loadProducts()">
+                        <button class="btn btn-primary btn-auto" onclick="loadProducts()">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                 style="margin-right: 5px;">
@@ -586,6 +810,18 @@
                             </svg>
                             Refresh Data
                         </button>
+                    </div>
+
+                    <!-- Sticky Toolbar -->
+                    <div class="admin-toolbar">
+                        <input type="text" id="searchInput" placeholder="Cari nama produk..."
+                            oninput="filterProducts()">
+                        <select id="categoryFilter" onchange="filterProducts()">
+                            <option value="All">Semua Kategori</option>
+                            <option value="Devices">Devices</option>
+                            <option value="Liquids">Liquids</option>
+                            <option value="Accessories">Accessories</option>
+                        </select>
                     </div>
 
                     <div class="table-wrapper">
@@ -666,10 +902,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-add" style="width: auto;"
-                        onclick="closeEditModal()">Batal</button>
-                    <button type="submit" class="btn btn-primary" style="width: auto; padding: 12px 30px;">Simpan
-                        Perubahan</button>
+                    <button type="button" class="btn btn-secondary btn-auto" onclick="closeEditModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-auto">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
@@ -722,6 +956,8 @@
 
                     if (result.status === "success" || Array.isArray(result)) {
                         allProductsData = Array.isArray(result) ? result : result.data;
+                        document.getElementById('searchInput').value = '';
+                        document.getElementById('categoryFilter').value = 'All';
                         renderManageTable();
                     } else {
                         throw new Error(result.error || "Pesan error dari backend tidak diketahui.");
@@ -741,12 +977,26 @@
             }
         }
 
-        function renderManageTable() {
+        function filterProducts() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const categorySelect = document.getElementById('categoryFilter').value;
+
+            const filteredData = allProductsData.filter(item => {
+                const matchesSearch = (item.nama && item.nama.toLowerCase().includes(searchQuery)) ||
+                    (item.deskripsi && item.deskripsi.toLowerCase().includes(searchQuery));
+                const matchesCategory = categorySelect === 'All' || item.kategori === categorySelect;
+                return matchesSearch && matchesCategory;
+            });
+
+            renderManageTable(filteredData);
+        }
+
+        function renderManageTable(filteredData = allProductsData) {
             const tbody = document.getElementById('manageBody');
             tbody.innerHTML = '';
 
-            if (allProductsData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px;">Belum ada produk di database.</td></tr>';
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px;">Produk tidak ditemukan.</td></tr>';
                 return;
             }
 
@@ -756,24 +1006,26 @@
                 'preorder': 'Pre-Order'
             };
 
-            allProductsData.forEach(item => {
+            filteredData.forEach(item => {
                 // Pastikan nama tidak undefined agar tidak error saat .replace()
                 const safeNama = (item.nama || 'Tanpa Nama').replace(/'/g, "\\'");
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><img src="${item.url_gambar || ''}" class="manage-img" onerror="handleImageError(this)"></td>
-                    <td style="font-weight: 600;">${item.nama || 'Tanpa Nama'}</td>
-                    <td><span style="font-size: 11px; opacity: 0.7; text-transform: uppercase;">${item.kategori || '-'}</span></td>
-                    <td style="color: var(--primary); font-weight: 700;">Rp${(item.harga || 0).toLocaleString('id-ID')}</td>
-                    <td><span class="status-badge ${item.status_stock === 'ready' ? 'status-ready' : 'status-empty'}">${statusLabels[item.status_stock] || item.status_stock}</span></td>
-                    <td>
+                    <td data-label="Gambar"><img src="${item.url_gambar || ''}" class="manage-img" onerror="handleImageError(this)"></td>
+                    <td data-label="Nama Produk" style="font-weight: 600;">${item.nama || 'Tanpa Nama'}</td>
+                    <td data-label="Kategori"><span style="font-size: 11px; opacity: 0.7; text-transform: uppercase;">${item.kategori || '-'}</span></td>
+                    <td data-label="Harga" style="color: var(--primary); font-weight: 700;">Rp${(item.harga || 0).toLocaleString('id-ID')}</td>
+                    <td data-label="Status"><span class=" ${item.status_stock === 'ready' ? 'status-ready' : 'status-empty'}">${statusLabels[item.status_stock] || item.status_stock}</span></td>
+                    <td data-label="Aksi">
                         <div class="action-btns">
                             <button class="btn-icon btn-edit" onclick="openEditModal(${item.id})" title="Edit">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4L18.5 2.5z"></path></svg>
+                                Edit
                             </button>
                             <button class="btn-icon btn-delete" onclick="confirmDelete(${item.id}, '${safeNama}')" title="Hapus">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                Hapus
                             </button>
                         </div>
                     </td>
