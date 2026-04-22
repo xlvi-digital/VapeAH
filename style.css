@@ -698,6 +698,7 @@ h4,
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    flex-direction: column;
 }
 
 .faq-question h4 {
@@ -1092,6 +1093,7 @@ footer {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1103,6 +1105,7 @@ footer {
         opacity: 0;
         transform: scale(0.95) translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -1115,19 +1118,23 @@ footer {
 
 /* --- Enhanced Dynamic Skeleton Loading --- */
 .skeleton {
-    background: linear-gradient(90deg, 
-        rgba(255, 255, 255, 0.05) 25%, 
-        rgba(255, 255, 255, 0.1) 50%, 
-        rgba(255, 255, 255, 0.05) 75%
-    );
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0.05) 25%,
+            rgba(255, 255, 255, 0.1) 50%,
+            rgba(255, 255, 255, 0.05) 75%);
     background-size: 200% 100%;
     animation: skeleton-shimmer 1.5s infinite linear;
     border-radius: var(--radius-sm);
 }
 
 @keyframes skeleton-shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
 }
 
 .skeleton-card {
@@ -1151,8 +1158,13 @@ footer {
     width: 100%;
 }
 
-.skeleton-line.short { width: 40%; }
-.skeleton-line.medium { width: 70%; }
+.skeleton-line.short {
+    width: 40%;
+}
+
+.skeleton-line.medium {
+    width: 70%;
+}
 
 .skeleton-btn {
     height: 44px;
@@ -1174,7 +1186,8 @@ footer {
     border: 1px solid var(--primary);
     border-radius: var(--radius-md);
     padding: 15px 20px;
-    display: none; /* Controlled by JS */
+    display: none;
+    /* Controlled by JS */
     align-items: center;
     justify-content: space-between;
     z-index: 9999;

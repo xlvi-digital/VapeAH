@@ -163,6 +163,36 @@
     .social-links {
         justify-content: center;
     }
+
+    /* --- FAQ Mobile Fix --- */
+    .faq-container {
+        width: 100% !important;
+        max-width: none !important;
+        padding: 0 10px;
+        margin: 0 !important;
+    }
+
+    .faq-question {
+        padding: 20px 15px !important;
+        gap: 15px;
+    }
+
+    .faq-question h4 {
+        font-size: 14px !important;
+        line-height: 1.4;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        flex: 1;
+    }
+
+    .faq-answer {
+        padding: 0 15px !important;
+        font-size: 13px !important;
+    }
+
+    .faq-item.active .faq-answer {
+        padding-bottom: 20px !important;
+    }
 }
 
 @media (max-width: 480px) {

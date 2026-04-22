@@ -654,21 +654,34 @@ function sendToWhatsApp() {
     if (STATE.cart.length === 0) return;
 
     const branchName = document.getElementById('pickup-branch').value;
+    if (!branchName) {
+        alert('Silahkan pilih cabang pengambilan terlebih dahulu.');
+        return;
+    }
+
     const selectedBranch = STATE.branches.find(b => b.name === branchName);
     const totalAmount = STATE.cart.reduce((sum, item) => sum + (item.harga * item.qty), 0);
 
-    let text = "Halo *jagoVape*, saya mau pesan:%0A";
+    // Build Message
+    let message = `*PESANAN BARU - JAGOVAPE*\n`;
+    message += `--------------------------------\n\n`;
     
-    STATE.cart.forEach((item) => {
-        text += `- ${item.nama} x ${item.qty}%0A`;
+    STATE.cart.forEach((item, index) => {
+        message += `${index + 1}. *${item.nama}*\n`;
+        message += `   Qty: ${item.qty} | Harga: ${formatRupiah(item.harga * item.qty)}\n\n`;
     });
 
-    text += `%0ATotal: *${formatRupiah(totalAmount)}*%0A`;
-    text += `Lokasi Ambil: *${branchName}*%0A`;
+    message += `--------------------------------\n`;
+    message += `*Total Bayar:* ${formatRupiah(totalAmount)}\n`;
+    message += `*Cabang Ambil:* ${branchName}\n`;
+    
     if (selectedBranch && selectedBranch.maps) {
-        text += `Maps: ${selectedBranch.maps}%0A`;
+        message += `*Link Maps:* ${selectedBranch.maps}\n`;
     }
+    
+    message += `\n_Terima kasih telah berbelanja di JagoVape!_`;
 
-    const url = `https://wa.me/${STATE.phoneWA}?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
+    // Encode and Open
+    const whatsappUrl = `https://wa.me/${STATE.phoneWA}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
 }
