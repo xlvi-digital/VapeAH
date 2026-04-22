@@ -603,7 +603,8 @@
             .admin-tabs {
                 flex-wrap: nowrap;
                 overflow-x: auto;
-                padding-bottom: 5px;
+                padding-bottom: 7px;
+                justify-content: flex-start;
             }
 
             .tab-btn {
@@ -638,6 +639,7 @@
         <div class="container nav-container">
             <a href="index.html" class="logo">jago<span>Vape</span></a>
             <div style="display: flex; gap: 10px;">
+                <!-- <button onclick="testConnection()" class="btn btn-primary btn-auto">Test Koneksi API</button> -->
                 <a href="index.html" class="btn btn-secondary btn-auto">Lihat Website</a>
                 <button onclick="logout()" class="btn btn-danger btn-auto">Keluar</button>
             </div>
@@ -745,8 +747,8 @@
                             <span class="format-badge">URL Gambar</span>
                             <span class="format-badge">Status Stock</span>
                         </div>
-                        <p style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">*Urutan kolom bebas,
-                            script akan mendeteksi nama kolom secara otomatis.</p>
+                        <p style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">* ID dan Timestamp akan
+                            ditambahkan secara otomatis oleh sistem.</p>
                     </div>
 
                     <input type="file" id="excelInput" accept=".xlsx, .xls, .csv" style="display: none;"
@@ -781,6 +783,7 @@
                                         <th>Deskripsi</th>
                                         <th>Gambar</th>
                                         <th>Status</th>
+                                        <th>Timestamp</th>
                                     </tr>
                                 </thead>
                                 <tbody id="previewBody">
@@ -885,8 +888,31 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Link Gambar</label>
-                        <input type="url" id="edit-urlGambar" required>
+                        <label>Gambar Produk</label>
+                        <div class="upload-wrapper"
+                            style="display: flex; gap: 15px; align-items: flex-start; margin-bottom: 10px;">
+                            <div id="edit-imgPreview" class="img-preview"
+                                style="width: 80px; height: 80px; border-radius: var(--radius-md); background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                            </div>
+                            <div style="flex-grow: 1;">
+                                <input type="file" id="edit-fileGambar" accept="image/*" style="display: none;"
+                                    onchange="handleEditFileSelect(this)">
+                                <button type="button" class="btn btn-secondary"
+                                    onclick="document.getElementById('edit-fileGambar').click()">
+                                    Pilih File Baru
+                                </button>
+                                <p id="edit-fileName"
+                                    style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">Maks. 5MB.
+                                    Kosongkan jika tidak ingin ganti.</p>
+                            </div>
+                        </div>
+                        <input type="hidden" id="edit-urlGambar">
                     </div>
                     <div class="form-group">
                         <label>Status Stock</label>
@@ -913,13 +939,54 @@
     <div id="adminToast" class="toast">Produk berhasil ditambahkan!</div>
 
     <script>
-        // Auth Logic
-        function logout() {
-            sessionStorage.removeItem('adminToken');
-            window.location.href = 'login.html';
+        // --- GLOBAL CONFIGURATION ---
+        const _0x1f2e = ['SkFHT1ZBUEVfU0VDVVJFXzIwMjQ=']; // JAGOVAPE_SECURE_2024
+
+        /**
+         * safeAtob: Decodes Base64 safely with error handling and header stripping
+         */
+        function safeAtob(str) {
+            try {
+                if (!str || typeof str !== 'string') return '';
+                const base64 = str.includes(',') ? str.split(',')[1] : str;
+                const cleanBase64 = base64.trim().replace(/[\r\n]/g, '');
+                return atob(cleanBase64);
+            } catch (e) {
+                console.error("[Base64 Error] Invalid characters or format:", e.message);
+                return '';
+            }
         }
 
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxr2ZJm6cHKU4U89Pj5vSi-sGBspkHPQNDkjRdA-A5wkzJJGbMJgHLtQg5LxV7th1kDuA/exec';
+        // Secret Key initialization using safe decoding and .trim()
+        const SECRET_KEY = safeAtob(_0x1f2e[0]).trim();
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzG-AewN7fgJS1SZ51s61uyr9jCz5o6m74fbN-0mmBLFy_gov0T3U5zUvTWfHhuL10qTg/exec';
+
+        // Diagnostics
+        async function testConnection() {
+            overlay.style.display = 'flex';
+            loadingText.textContent = "Menguji koneksi ke Google Apps Script...";
+
+            try {
+                // Testing GET
+                const url = `${scriptURL}?key=${encodeURIComponent(SECRET_KEY)}&action=test`;
+                const response = await fetch(url);
+                const result = await response.json();
+
+                if (result.result === "success") {
+                    alert("✅ " + result.message);
+                    console.log("Status Code:", response.status);
+                } else {
+                    alert("❌ Koneksi Gagal (Server Error): " + result.error);
+                }
+            } catch (error) {
+                console.error("Connection Test Error:", error);
+                alert("Terjadi kesalahan sistem saat mencoba koneksi. Status: " + (error.status || "Check Console"));
+            } finally {
+                overlay.style.display = 'none';
+            }
+        }
+
+        // Selectors
         const form = document.querySelector('#productForm');
         const overlay = document.querySelector('#loadingOverlay');
         const loadingText = document.querySelector('#loadingText');
@@ -927,6 +994,12 @@
 
         let bulkParsedData = [];
         let allProductsData = [];
+
+        // Auth Logic
+        function logout() {
+            sessionStorage.removeItem('adminToken');
+            window.location.href = 'login.html';
+        }
 
         // --- MANAGEMENT LOGIC ---
 
@@ -943,16 +1016,31 @@
 
             try {
                 console.log("🔍 Memulai fetch data dari:", scriptURL);
-                const response = await fetch(scriptURL, { mode: 'cors' });
+                const url = `${scriptURL}?key=${encodeURIComponent(SECRET_KEY)}`;
+                const response = await fetch(url, { mode: 'cors' });
                 const contentType = response.headers.get("content-type");
 
                 if (!response.ok) {
-                    throw new Error(`Server merespon dengan status: ${response.status}`);
+                    console.error("❌ Link Error. Status Code:", response.status);
+                    if (response.status === 403) {
+                        alert("Akses Ditolak (403): Kunci Mismatch atau Deployment salah.");
+                        throw new Error("403 Forbidden");
+                    }
+                    throw new Error(`Server bermasalah. Status: ${response.status}`);
                 }
 
                 if (contentType && contentType.indexOf("application/json") !== -1) {
                     const result = await response.json();
                     console.log("📦 Data mentah diterima:", result);
+
+                    // Check for internal error result from GAS
+                    if (result.result === "error") {
+                        console.error("❌ Key mismatch or Backend error:", result.error);
+                        if (result.status === 403) {
+                            alert("Kunci tidak cocok, periksa kembali SECRET_KEY di backend dan frontend");
+                        }
+                        throw new Error(result.error || "Pesan error dari backend tidak diketahui.");
+                    }
 
                     if (result.status === "success" || Array.isArray(result)) {
                         allProductsData = Array.isArray(result) ? result : result.data;
@@ -1047,6 +1135,18 @@
             document.getElementById('edit-statusStock').value = product.status_stock;
             document.getElementById('edit-deskripsi').value = product.deskripsi || '';
 
+            // Set Preview
+            const preview = document.getElementById('edit-imgPreview');
+            if (product.url_gambar) {
+                preview.innerHTML = `<img src="${product.url_gambar}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            } else {
+                preview.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`;
+            }
+
+            // Reset file input
+            document.getElementById('edit-fileGambar').value = '';
+            document.getElementById('edit-fileName').textContent = 'Maks. 5MB. Kosongkan jika tidak ingin ganti.';
+
             document.getElementById('editModal').style.display = 'flex';
         }
 
@@ -1056,37 +1156,61 @@
 
         document.getElementById('editForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            overlay.style.display = 'flex';
-            loadingText.textContent = "Memperbarui produk...";
 
-            const payload = {
-                action: 'editProduct',
-                id: parseInt(document.getElementById('edit-id').value),
-                nama: document.getElementById('edit-nama').value,
-                kategori: document.getElementById('edit-kategori').value,
-                harga: parseInt(document.getElementById('edit-harga').value),
-                url_gambar: document.getElementById('edit-urlGambar').value,
-                status_stock: document.getElementById('edit-statusStock').value,
-                deskripsi: document.getElementById('edit-deskripsi').value
-            };
+            const fileInput = document.getElementById('edit-fileGambar');
+            let imageUrl = document.getElementById('edit-urlGambar').value;
+
+            overlay.style.display = 'flex';
 
             try {
+                // 1. Jika ada file baru dipilih, upload dulu
+                if (fileInput.files.length > 0) {
+                    loadingText.textContent = "Sedang mengunggah gambar baru...";
+                    const uploadResult = await performImageUpload(fileInput.files[0], false);
+                    if (uploadResult && uploadResult.result === 'success') {
+                        imageUrl = uploadResult.url;
+                    } else {
+                        throw new Error(uploadResult ? uploadResult.error : "Gagal upload gambar");
+                    }
+                }
+
+                // 2. Kirim update produk
+                loadingText.textContent = "Memperbarui data produk...";
+                const payload = {
+                    key: SECRET_KEY,
+                    action: 'editProduct',
+                    id: parseInt(document.getElementById('edit-id').value),
+                    nama: document.getElementById('edit-nama').value,
+                    kategori: document.getElementById('edit-kategori').value,
+                    harga: parseInt(document.getElementById('edit-harga').value),
+                    url_gambar: imageUrl,
+                    status_stock: document.getElementById('edit-statusStock').value,
+                    deskripsi: document.getElementById('edit-deskripsi').value
+                };
+
                 const response = await fetch(scriptURL, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(payload)
                 });
+
+                if (response.status === 403) {
+                    alert("Akses Ditolak (403): Token tidak valid.");
+                    return;
+                }
+
                 const result = await response.json();
 
                 if (result.result === 'success') {
                     showToast("Produk berhasil diperbarui!");
                     closeEditModal();
-                    loadProducts(); // Refresh table
+                    loadProducts();
                 } else {
                     alert("Gagal update: " + result.error);
                 }
             } catch (error) {
                 console.error("Update error:", error);
-                alert("Terjadi kesalahan sistem saat memperbarui.");
+                alert("Kesalahan: " + error.message);
             } finally {
                 overlay.style.display = 'none';
             }
@@ -1106,8 +1230,18 @@
             try {
                 const response = await fetch(scriptURL, {
                     method: 'POST',
-                    body: JSON.stringify({ action: 'deleteProduct', id: id })
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ key: SECRET_KEY, action: 'deleteProduct', id: id })
                 });
+
+                console.log("POST Delete Status Code:", response.status);
+
+                if (response.status === 403) {
+                    alert("Akses Ditolak (403): Token tidak valid saat menghapus.");
+                    overlay.style.display = 'none';
+                    return;
+                }
+
                 const result = await response.json();
 
                 if (result.result === 'success') {
@@ -1137,45 +1271,72 @@
             };
             reader.readAsDataURL(file);
 
-            // Upload ke GAS
-            await performImageUpload(file);
+            // Upload ke GAS (Langsung untuk mode tambah satuan)
+            const result = await performImageUpload(file, true);
+            if (result && result.result === 'success') {
+                document.getElementById('urlGambar').value = result.url;
+                showToast("Gambar berhasil diunggah!");
+            }
         }
 
-        async function performImageUpload(file) {
-            overlay.style.display = 'flex';
-            loadingText.textContent = "Sedang mengunggah gambar...";
+        async function handleEditFileSelect(input) {
+            const file = input.files[0];
+            if (!file) return;
 
+            document.getElementById('edit-fileName').textContent = file.name;
+
+            // Preview Lokal
             const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = async () => {
-                const base64Data = reader.result.split(',')[1];
-                const payload = {
-                    action: 'uploadImage',
-                    filename: file.name,
-                    mimeType: file.type,
-                    data: base64Data
-                };
-
-                try {
-                    const response = await fetch(scriptURL, {
-                        method: 'POST',
-                        body: JSON.stringify(payload)
-                    });
-                    const result = await response.json();
-
-                    if (result.result === 'success') {
-                        document.getElementById('urlGambar').value = result.url;
-                        showToast("Gambar berhasil diunggah!");
-                    } else {
-                        alert("Gagal upload gambar: " + result.error);
-                    }
-                } catch (error) {
-                    console.error("Upload error:", error);
-                    alert("Terjadi kesalahan saat mengunggah gambar.");
-                } finally {
-                    overlay.style.display = 'none';
-                }
+            reader.onload = (e) => {
+                const preview = document.getElementById('edit-imgPreview');
+                preview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
             };
+            reader.readAsDataURL(file);
+        }
+
+        async function performImageUpload(file, showOverlay = true) {
+            if (showOverlay) {
+                overlay.style.display = 'flex';
+                loadingText.textContent = "Sedang mengunggah gambar...";
+            }
+
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = async () => {
+                    const base64Data = reader.result.split(',')[1];
+                    const payload = {
+                        key: SECRET_KEY,
+                        action: 'uploadImage',
+                        filename: file.name,
+                        mimeType: file.type,
+                        data: base64Data
+                    };
+
+                    try {
+                        const response = await fetch(scriptURL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (response.status === 403) {
+                            alert("Akses Ditolak (403): Token tidak valid.");
+                            resolve({ result: 'error', error: '403 Forbidden' });
+                            return;
+                        }
+
+                        const result = await response.json();
+                        resolve(result);
+                    } catch (error) {
+                        console.error("Upload error:", error);
+                        reject(error);
+                    } finally {
+                        if (showOverlay) overlay.style.display = 'none';
+                    }
+                };
+                reader.onerror = (error) => reject(error);
+            });
         }
 
         // Tab Switching
@@ -1203,6 +1364,7 @@
             loadingText.textContent = "Sedang menyimpan ke Google Sheets...";
 
             const data = {
+                key: SECRET_KEY,
                 nama: document.querySelector('#nama').value,
                 kategori: document.querySelector('#kategori').value,
                 harga: parseInt(document.querySelector('#harga').value),
@@ -1213,9 +1375,17 @@
 
             fetch(scriptURL, {
                 method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(data)
             })
-                .then(response => response.json())
+                .then(response => {
+                    console.log("ADD Status Code:", response.status);
+                    if (response.status === 403) {
+                        alert("Akses Ditolak (403): Token tidak valid saat menambah produk.");
+                        throw new Error("Unauthorized");
+                    }
+                    return response.json();
+                })
                 .then(result => {
                     overlay.style.display = 'none';
                     if (result.result === 'success') {
@@ -1397,6 +1567,7 @@
                     <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${deskripsi}</td>
                     <td style="font-size: 10px; opacity: 0.6;">${url_gambar ? url_gambar.substring(0, 30) + '...' : '-'}</td>
                     <td><span class="status-badge ${item.status_stock === 'ready' ? 'status-ready' : 'status-empty'}" style="position: static; display: inline-block;">${statusLabels[item.status_stock] || item.status_stock}</span></td>
+                    <td style="font-size: 11px; opacity: 0.5;">Otomatis</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1415,8 +1586,18 @@
                 // KIRIM SEBAGAI ARRAY (BATCH UPLOAD)
                 const response = await fetch(scriptURL, {
                     method: 'POST',
-                    body: JSON.stringify(bulkParsedData)
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ key: SECRET_KEY, data: bulkParsedData })
                 });
+
+                console.log("BULK Status Code:", response.status);
+
+                if (response.status === 403) {
+                    alert("Akses Ditolak (403): Token tidak valid saat Bulk Upload.");
+                    overlay.style.display = 'none';
+                    return;
+                }
+
                 const result = await response.json();
 
                 if (result.result === 'success') {

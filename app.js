@@ -2,8 +2,29 @@
  * JagoVape - Premium Vanilla JS Logic
  */
 
+// --- GLOBAL CONFIGURATION ---
+const _0x4a2e = ['SkFHT1ZBUEVfU0VDVVJFXzIwMjQ=']; // JAGOVAPE_SECURE_2024
+
+/**
+ * safeAtob: Decodes Base64 safely with error handling and header stripping
+ */
+function safeAtob(str) {
+    try {
+        if (!str || typeof str !== 'string') return '';
+        const base64 = str.includes(',') ? str.split(',')[1] : str;
+        const cleanBase64 = base64.trim().replace(/[\r\n]/g, '');
+        return atob(cleanBase64);
+    } catch (e) {
+        console.error("[Base64 Error] Invalid characters or format:", e.message);
+        return '';
+    }
+}
+
+// Secret Key initialization using safe decoding and .trim()
+const SECRET_KEY = safeAtob(_0x4a2e[0]).trim();
+
 const STATE = {
-    scriptURL: 'https://script.google.com/macros/s/AKfycbxr2ZJm6cHKU4U89Pj5vSi-sGBspkHPQNDkjRdA-A5wkzJJGbMJgHLtQg5LxV7th1kDuA/exec',
+    scriptURL: 'https://script.google.com/macros/s/AKfycbzG-AewN7fgJS1SZ51s61uyr9jCz5o6m74fbN-0mmBLFy_gov0T3U5zUvTWfHhuL10qTg/exec',
     products: [],
     cart: [],
     activeCategory: 'All',
@@ -12,6 +33,17 @@ const STATE = {
     currentPage: 1,
     itemsPerPage: 12,
     phoneWA: '6281313362467',
+    branches: [
+        { name: 'Cianjur', maps: 'https://maps.app.goo.gl/aUtpT4hJx1KXSm7o8' },
+        { name: 'Ciranjang', maps: 'https://maps.app.goo.gl/sUUJw3Cj8AXJXqyd8' },
+        { name: 'Cipanas', maps: 'https://maps.app.goo.gl/HKN6dDeFGiuuGoBC6' },
+        { name: 'Beelka', maps: 'https://maps.app.goo.gl/C7vTG7mzra5dyDrz5' },
+        { name: 'Cibeber', maps: 'https://maps.app.goo.gl/smd86X6WXNucfAGJ6' },
+        { name: 'Bojong', maps: 'https://maps.app.goo.gl/6r55j8SErbS25BwdA' },
+        { name: 'Sukabumi', maps: 'https://maps.app.goo.gl/oJf9j1TenC2XiXHj8' },
+        { name: 'Siliwangi', maps: 'https://maps.app.goo.gl/ALNJwQ8L6VRh8owD7' },
+        { name: 'Bypass', maps: 'https://maps.app.goo.gl/YaVzGX7XE2JRVvWD7' }
+    ],
     faqs: [
         { q: 'Apakah produk di jagoVape 100% original?', a: 'Ya, kami menjamin seluruh produk yang kami jual 100% original dari distributor resmi.' },
         { q: 'Bagaimana jam operasional toko?', a: 'Toko fisik kami buka setiap hari mulai pukul 10:00 - 22:00 WIB.' },
@@ -28,8 +60,22 @@ async function initApp() {
     loadCartFromStorage();
     setupEventListeners();
     await fetchProducts();
+    renderBranches();
     renderFAQ();
     window.updateCartDisplay();
+}
+
+function renderBranches() {
+    const container = document.getElementById('branch-grid');
+    if (!container) return;
+
+    container.innerHTML = STATE.branches.map(b => `
+        <div class="branch-card">
+            <h3 class="font-premium">${b.name}</h3>
+            <p>Cabang JagoVape ${b.name}</p>
+            <a href="${b.maps}" target="_blank" class="btn btn-maps">Buka di Maps</a>
+        </div>
+    `).join('');
 }
 
 // --- DATA FETCHING ---
@@ -42,8 +88,30 @@ async function fetchProducts() {
     if (grid) grid.style.display = 'none';
 
     try {
-        const response = await fetch(STATE.scriptURL);
+        const url = `${STATE.scriptURL}?key=${encodeURIComponent(SECRET_KEY)}`;
+        console.log("🔍 Fetching products from:", url);
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            console.error("❌ Link Error. Status Code:", response.status);
+            if (response.status === 403) {
+                console.error("❌ Akses Ditolak (403): Secret Key atau deployment bermasalah.");
+                if (grid) grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color: #ff4444;">Eror Keamanan: Akses API Ditolak (403).</p>';
+                return;
+            }
+            throw new Error(`HTTP Error: ${response.status}`);
+        }
+
         const result = await response.json();
+
+        // Check for internal error result from GAS (e.g. key mismatch)
+        if (result.result === "error") {
+            console.error("❌ Key mismatch or Backend error:", result.error);
+            if (grid) grid.innerHTML = `<p style="text-align:center; grid-column: 1/-1; color: #ff4444;">Gagal memuat produk: ${result.error}</p>`;
+            return;
+        }
+
         const rawData = result.data || result;
 
         STATE.products = rawData.filter(p => {
@@ -272,7 +340,15 @@ window.updateCartDisplay = function () {
     }
 
     if (cartFooter) cartFooter.style.display = 'block';
-    if (branchSelector) branchSelector.style.display = 'block';
+    
+    // Update Branch Selector Dropdown
+    if (branchSelector) {
+        branchSelector.style.display = 'block';
+        const select = document.getElementById('pickup-branch');
+        if (select && select.options.length <= 1) { // Only populate if empty or only has one option
+            select.innerHTML = STATE.branches.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+        }
+    }
 
     let total = 0;
 
@@ -491,19 +567,22 @@ function animateToCart(event, btnElement) {
 function sendToWhatsApp() {
     if (STATE.cart.length === 0) return;
 
-    const branch = document.getElementById('pickup-branch').value;
+    const branchName = document.getElementById('pickup-branch').value;
+    const selectedBranch = STATE.branches.find(b => b.name === branchName);
     const totalAmount = STATE.cart.reduce((sum, item) => sum + (item.harga * item.qty), 0);
 
-    let text = "Halo *jagoVape*, saya ingin memesan:%0A%0A";
-
-    STATE.cart.forEach((item, index) => {
-        text += `${index + 1}. *${item.nama}* - (Qty: ${item.qty}) - *${formatRupiah(item.harga * item.qty)}*%0A`;
+    let text = "Halo *jagoVape*, saya mau pesan:%0A";
+    
+    STATE.cart.forEach((item) => {
+        text += `- ${item.nama} x ${item.qty}%0A`;
     });
 
-    text += `%0A*Total Harga: ${formatRupiah(totalAmount)}*%0A`;
-    text += `Pilihan Cabang: *Cabang ${branch}*%0A%0A`;
-    text += "Mohon segera diproses, terima kasih!";
+    text += `%0ATotal: *${formatRupiah(totalAmount)}*%0A`;
+    text += `Lokasi Ambil: *${branchName}*%0A`;
+    if (selectedBranch && selectedBranch.maps) {
+        text += `Maps: ${selectedBranch.maps}%0A`;
+    }
 
-    const url = `https://wa.me/${STATE.phoneWA}?text=${text}`;
+    const url = `https://wa.me/${STATE.phoneWA}?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
 }

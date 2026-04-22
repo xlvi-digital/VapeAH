@@ -24,7 +24,7 @@
     /* Spacing Variables */
     --container-padding: 24px;
     --grid-gap: 20px;
-    --section-padding: 100px;
+    --section-padding: 80px;
 }
 
 /* --- Base --- */
@@ -365,7 +365,7 @@ h4,
 
 .section-title {
     text-align: center;
-    margin-bottom: 60px;
+    margin: 60px 0;
 }
 
 .section-title h2 {
@@ -622,37 +622,43 @@ h4,
 
 .branch-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--grid-gap);
 }
 
 .branch-card {
     background: var(--bg-surface);
-    padding: 50px 40px;
+    padding: 30px;
     border-radius: var(--radius-lg);
     text-align: center;
     border: var(--border);
     transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .branch-card:hover {
     border-color: var(--primary);
     transform: translateY(-5px);
+    box-shadow: var(--neon-glow);
 }
 
 .branch-card h3 {
-    font-size: 22px;
-    margin-bottom: 12px;
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: var(--primary);
 }
 
 .branch-card p {
     color: var(--text-muted);
-    margin-bottom: 30px;
-    font-size: 15px;
+    margin-bottom: 20px;
+    font-size: 13px;
 }
 
 .btn-maps {
-    padding: 12px 30px;
+    padding: 10px 20px;
+    font-size: 13px;
     border: 1px solid var(--primary);
     border-radius: 30px;
     color: var(--primary);
@@ -660,6 +666,7 @@ h4,
     font-weight: 700;
     transition: 0.3s;
     display: block;
+    margin-top: auto;
 }
 
 .btn-maps:hover {
@@ -880,6 +887,10 @@ h4,
     box-shadow: 0 0 10px rgba(255, 107, 0, 0.1);
 }
 
+footer {
+    padding: 60px 0;
+}
+
 .cart-footer {
     padding: 30px 40px 40px;
     background: var(--bg-surface);
@@ -973,116 +984,46 @@ h4,
     bottom: 50px;
 }
 
+/* --- Footer Social Links --- */
+.social-links {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.social-btn {
+    width: 44px;
+    height: 44px;
+    background: var(--bg-surface);
+    border: 1px solid rgba(255, 107, 0, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.social-btn:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 0 10px 20px var(--primary-glow);
+}
+
+.social-btn svg {
+    transition: transform 0.4s ease;
+}
+
+.social-btn:hover svg {
+    transform: rotate(12deg);
+}
+
 /* --- Mobile --- */
-@media (max-width: 992px) {
-    .hero-content h1 {
-        font-size: 72px;
-    }
-
-    .about-grid,
-    .branch-grid {
-        grid-template-columns: 1fr;
-        padding: 7rem 7%;
-    }
-
-    .nav-menu {
-        display: none;
-    }
-}
-
-@media (max-width: 768px) {
-    :root {
-        --container-padding: 20px;
-        --grid-gap: 15px;
-        --section-padding: 60px;
-    }
-
-    .container {
-        padding: 0 20px;
-    }
-
-    .product-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: var(--grid-gap);
-    }
-
-    .product-card {
-        margin-bottom: 25px;
-    }
-
-    .p-header {
-        height: 200px;
-        padding: 20px;
-    }
-
-    .p-body {
-        padding: 20px;
-    }
-
-    .p-title {
-        font-size: 15px;
-        height: 44px;
-    }
-
-    .p-price {
-        font-size: 18px;
-        margin-bottom: 20px;
-    }
-
-    .btn-add span {
-        display: none;
-    }
-
-    .btn-add {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        padding: 0;
-        justify-content: center;
-    }
-
-    .circle-icon {
-        width: 42px;
-        height: 42px;
-        background: transparent;
-    }
-
-    .cart-drawer {
-        width: 100%;
-        right: -100%;
-    }
-
-    .hero-content h1 {
-        font-size: 56px;
-    }
-
-    .filter-wrapper {
-        flex-direction: column;
-        gap: 20px;
-        align-items: stretch;
-    }
-
-    .search-box {
-        width: 100%;
-    }
-
-    .filter-tabs {
-        width: 100%;
-        overflow-x: auto;
-        padding-right: 10px;
-    }
-
-    .filter-tab {
-        padding: 10px 20px;
-    }
-
-    .floating-cart {
-        bottom: 20px;
-        right: 20px;
-        width: 60px;
-        height: 60px;
-    }
-}
+/* Styles moved to mobile.css for cleaner architecture */
 
 /* --- Misc Animations --- */
 .flying-item {

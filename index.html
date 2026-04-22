@@ -15,6 +15,7 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="mobile.css" media="all"> <!-- Always load for cascade, or use media query -->
 </head>
 
 <body>
@@ -186,21 +187,8 @@
         </div>
         <div class="branch-grid" id="branch-grid">
             <!-- Generated via JS or static -->
-            <div class="branch-card">
-                <h3 class="font-premium">JagoVape Sayang</h3>
-                <p>Jl. Sayang No. 12, Cianjur Kota</p>
-                <a href="#" target="_blank" class="btn btn-maps">Buka di Maps</a>
-            </div>
-            <div class="branch-card">
-                <h3 class="font-premium">JagoVape Joglo</h3>
-                <p>Jl. Joglo Raya No. 45, Cianjur</p>
-                <a href="#" target="_blank" class="btn btn-maps">Buka di Maps</a>
-            </div>
-            <div class="branch-card">
-                <h3 class="font-premium">JagoVape Panembong</h3>
-                <p>Jl. Panembong No. 88, Cianjur</p>
-                <a href="#" target="_blank" class="btn btn-maps">Buka di Maps</a>
-            </div>
+            <!-- Dynamic branches loaded via app.js -->
+        </div>
         </div>
     </section>
 
@@ -250,9 +238,8 @@
                     <h4 class="font-premium" style="margin-bottom: 12px; font-size: 14px; opacity: 0.7;">Pilih Cabang
                         Pengambilan:</h4>
                     <select id="pickup-branch" class="branch-select">
-                        <option value="Sayang">Cabang Sayang</option>
-                        <option value="Joglo">Cabang Joglo</option>
-                        <option value="Panembong">Cabang Panembong</option>
+                        <option value="" disabled selected>Pilih Lokasi Pengambilan</option>
+                        <!-- Dynamic options via JS -->
                     </select>
                 </div>
             </div>
