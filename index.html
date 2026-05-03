@@ -239,11 +239,133 @@
         <i data-lucide="arrow-up"></i>
     </a>
 
-    <!-- Floating WhatsApp CTA -->
-    <a href="https://wa.me/6281313362467" target="_blank" style="position: fixed; bottom: 20px; right: 20px; z-index: 9998; background: var(--primary-red); color: white; padding: 12px 24px; border-radius: 50px; display: flex; align-items: center; gap: 10px; font-weight: 600; box-shadow: var(--neon-red-glow); text-decoration: none; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1.05)'">
+    <!-- Floating WhatsApp CTA (smart: buka cart jika ada item) -->
+    <button id="floatingWABtn" onclick="handleFloatingCTA()" style="position:fixed;bottom:20px;right:20px;z-index:999;background:var(--primary-red);color:white;padding:12px 24px;border-radius:50px;display:flex;align-items:center;gap:10px;font-weight:600;box-shadow:var(--neon-red-glow);border:none;cursor:pointer;transition:all 0.3s ease;font-family:inherit;font-size:1rem;">
         <i data-lucide="message-circle"></i>
-        <!-- <span></span> -->
-    </a>
+        <span id="floatingWAText" style="font-size:0.9rem;">Order WA</span>
+    </button>
+
+    <!-- Checkout Form Modal -->
+    <div id="checkoutModal" class="checkout-modal" role="dialog" aria-modal="true">
+        <div class="checkout-overlay" onclick="closeCheckout()"></div>
+        <div class="checkout-sheet glass">
+            <div class="checkout-handle"></div>
+            <div class="checkout-header">
+                <div>
+                    <h2 style="font-size:1.25rem;font-weight:700;">Detail Pesanan</h2>
+                    <p style="font-size:0.82rem;color:var(--text-gray);margin-top:3px;">Isi data untuk proses pesanan</p>
+                </div>
+                <button class="checkout-close-btn" onclick="closeCheckout()" aria-label="Tutup">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <!-- Ringkasan Produk -->
+            <div class="checkout-summary" id="checkoutSummary"></div>
+
+            <form id="checkoutForm" onsubmit="submitCheckout(event)" novalidate>
+
+                <!-- 1. Info Pemesan -->
+                <div class="checkout-form-grid">
+                    <div class="checkout-field">
+                        <label for="co_nama">Nama Lengkap <span class="req">*</span></label>
+                        <input type="text" id="co_nama" placeholder="Nama lengkap" autocomplete="name">
+                        <span class="field-error" id="err_nama"></span>
+                    </div>
+                    <div class="checkout-field">
+                        <label for="co_wa">No. WhatsApp <span class="req">*</span></label>
+                        <input type="tel" id="co_wa" placeholder="08xxxxxxxxxx" inputmode="numeric">
+                        <span class="field-error" id="err_wa"></span>
+                    </div>
+                </div>
+
+                <!-- 2. Metode Pengiriman -->
+                <div style="margin-bottom:16px;">
+                    <p style="font-size:0.78rem;font-weight:600;color:var(--text-gray);margin-bottom:10px;letter-spacing:0.3px;">METODE PENGIRIMAN <span class="req">*</span></p>
+                    <div class="delivery-method-group">
+                        <label class="delivery-option" id="opt_delivery" onclick="selectDelivery('delivery')">
+                            <input type="radio" name="delivery_method" value="delivery" id="radio_delivery" checked>
+                            <span class="delivery-icon">🚚</span>
+                            <div>
+                                <strong>Kirim ke alamat</strong>
+                                <small>Ongkir dikonfirmasi admin</small>
+                            </div>
+                            <span class="delivery-check"><i data-lucide="check"></i></span>
+                        </label>
+                        <label class="delivery-option" id="opt_pickup" onclick="selectDelivery('pickup')">
+                            <input type="radio" name="delivery_method" value="pickup" id="radio_pickup">
+                            <span class="delivery-icon">🏪</span>
+                            <div>
+                                <strong>Ambil di toko</strong>
+                                <small>Vape AH Cianjur • Gratis</small>
+                            </div>
+                            <span class="delivery-check"><i data-lucide="check"></i></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 3a. Panel Kirim ke Alamat -->
+                <div id="panel_delivery" class="delivery-panel" style="display:block;">
+                    <div class="checkout-field co-full" style="margin-bottom:8px;">
+                        <label for="co_maps">
+                            Link Google Maps Lokasi Kamu <span class="req">*</span>
+                        </label>
+                        <div style="position:relative;">
+                            <input type="url" id="co_maps"
+                                placeholder="https://maps.google.com/... atau maps.app.goo.gl/..."
+                                inputmode="url" autocomplete="off"
+                                style="padding-left:42px;">
+                            <i data-lucide="map-pin" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--primary-red);pointer-events:none;"></i>
+                        </div>
+                        <span class="field-error" id="err_maps"></span>
+                        <small style="color:var(--text-gray);font-size:0.75rem;margin-top:4px;display:block;">
+                            Buka Google Maps → tap lokasi kamu → salin link &amp; paste di sini
+                        </small>
+                    </div>
+                    <div class="checkout-field co-full">
+                        <label for="co_catatan">Catatan <span style="color:var(--text-gray);font-weight:400;">(opsional)</span></label>
+                        <textarea id="co_catatan" rows="2" placeholder="Warna, rasa, atau instruksi khusus..."></textarea>
+                    </div>
+                </div>
+
+                <!-- 3b. Panel Ambil di Toko -->
+                <div id="panel_pickup" class="delivery-panel" style="display:none;">
+                    <div class="pickup-info-card">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                            <span style="font-size:1.5rem;">🏪</span>
+                            <div>
+                                <strong style="font-size:0.95rem;">Vape AH Cianjur</strong>
+                                <p style="color:var(--text-gray);font-size:0.8rem;margin-top:2px;">Ambil pesanan langsung di toko kami</p>
+                            </div>
+                        </div>
+                        <a href="https://maps.app.goo.gl/Nzx9E5f5emWtbDV57" target="_blank" class="pickup-maps-btn">
+                            <i data-lucide="map-pin"></i>
+                            Lihat Lokasi di Google Maps
+                        </a>
+                        <div class="pickup-catatan">
+                            <label for="co_catatan_pickup">Catatan <span style="color:var(--text-gray);font-weight:400;">(opsional)</span></label>
+                            <textarea id="co_catatan_pickup" rows="2" placeholder="Jam kedatangan, instruksi khusus..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Bar -->
+                <div class="checkout-total-bar" style="margin-top:16px;">
+                    <div>
+                        <span>Total Produk</span>
+                        <span id="shippingNote" style="display:block;font-size:0.75rem;color:var(--text-gray);font-weight:400;margin-top:2px;">+ Ongkir dikonfirmasi admin</span>
+                    </div>
+                    <span id="checkoutTotalVal" class="checkout-total-val">Rp 0</span>
+                </div>
+
+                <button type="submit" class="checkout-submit-btn" id="checkoutSubmitBtn">
+                    <i data-lucide="send"></i>
+                    <span>Kirim ke WhatsApp</span>
+                </button>
+                <p class="checkout-microcopy">Pesanan dikirim langsung ke WhatsApp admin Vape AH 🙏</p>
+            </form>
+        </div>
+    </div>
 
     <script src="assets/js/animations.js"></script>
     <script src="assets/js/app.js"></script>

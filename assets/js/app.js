@@ -32,6 +32,7 @@ async function init() {
     await fetchProducts();
     setupEventListeners();
     updateCartUI();
+    updateFloatingBtn();
 }
 
 /**
@@ -139,17 +140,20 @@ window.addToCart = function(id, nama, harga, gambar) {
     }
     saveCart();
     updateCartUI();
+    updateFloatingBtn();
 
-    // Feedback visual saat tambah ke keranjang
-    if (window.showStoreToast) {
-        window.showStoreToast('Produk berhasil ditambahkan!', 'success');
-    }
-    
+    if (window.showStoreToast) window.showStoreToast('Produk ditambahkan ke keranjang!', 'success');
+
     if (cartBadge) {
         cartBadge.classList.remove('badge-bounce');
-        void cartBadge.offsetWidth; // Memicu reflow browser agar animasi bisa diulang
+        void cartBadge.offsetWidth;
         cartBadge.classList.add('badge-bounce');
     }
+
+    // Auto-buka cart setelah 350ms (beri waktu toast muncul)
+    setTimeout(() => {
+        if (!document.getElementById('cartDrawer').classList.contains('active')) toggleCart();
+    }, 350);
 }
 
 function saveCart() {
@@ -215,25 +219,210 @@ window.toggleMobileMenu = function() {
  * Checkout via WhatsApp
  */
 window.checkoutWhatsApp = function() {
-    if (cart.length === 0) return alert('Keranjang masih kosong!');
+    if (cart.length === 0) return;
+    openCheckout();
+};
 
-    let message = 'Halo Vape AH!%0A';
-    message += 'Saya ingin memesan produk berikut:%0A';
-    message += '----------------------------------%0A';
-    
-    let total = 0;
-    cart.forEach(item => {
-        total += (item.harga * item.qty);
-        message += `- ${item.nama} (Qty: ${item.qty}) - ${formatRupiah(item.harga)}%0A`;
+window.openCheckout = function() {
+    if (cart.length === 0) {
+        if (window.showStoreToast) window.showStoreToast('Keranjang masih kosong!', 'error');
+        return;
+    }
+    // Tutup cart drawer
+    document.getElementById('cartDrawer').classList.remove('active');
+    document.getElementById('cartOverlay').classList.remove('active');
+
+    // Isi ringkasan pesanan
+    const summary = document.getElementById('checkoutSummary');
+    if (summary) {
+        summary.innerHTML = cart.map(item => `
+            <div class="co-sum-item">
+                <span class="co-sum-name">${item.nama}</span>
+                <span class="co-sum-price">x${item.qty} &nbsp;${formatRupiah(item.harga * item.qty)}</span>
+            </div>
+        `).join('');
+    }
+
+    const total = cart.reduce((s, i) => s + i.harga * i.qty, 0);
+    const totalEl = document.getElementById('checkoutTotalVal');
+    if (totalEl) totalEl.textContent = formatRupiah(total);
+
+    // Reset ke state awal: metode "delivery" terpilih
+    selectDelivery('delivery');
+
+    // Bersihkan semua error
+    ['nama', 'wa', 'maps'].forEach(f => {
+        const err = document.getElementById('err_' + f);
+        const inp = document.getElementById('co_' + f);
+        if (err) err.textContent = '';
+        if (inp) inp.classList.remove('co-error');
     });
 
-    message += '----------------------------------%0A';
-    message += `Total Pembayaran: ${formatRupiah(total)}%0A`;
-    message += 'Metode Pengiriman: (Isi sendiri)%0A';
-    message += 'Alamat: (Isi sendiri)%0A';
+    document.getElementById('checkoutModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    lucide.createIcons();
+};
 
-    window.open(`https://wa.me/${WA_PHONE}?text=${message}`, '_blank');
+window.closeCheckout = function() {
+    document.getElementById('checkoutModal').classList.remove('active');
+    document.body.style.overflow = '';
+};
+
+// State metode pengiriman
+let currentDeliveryMethod = 'delivery';
+
+/**
+ * Toggle UI saat user pilih metode pengiriman
+ */
+window.selectDelivery = function(method) {
+    currentDeliveryMethod = method;
+
+    // Update radio
+    document.getElementById('radio_' + method).checked = true;
+
+    // Update visual selection
+    ['delivery', 'pickup'].forEach(m => {
+        document.getElementById('opt_' + m).classList.toggle('selected', m === method);
+    });
+
+    // Toggle panel dengan animasi
+    const panelDelivery = document.getElementById('panel_delivery');
+    const panelPickup   = document.getElementById('panel_pickup');
+    const shippingNote  = document.getElementById('shippingNote');
+
+    if (method === 'delivery') {
+        panelDelivery.style.display = 'block';
+        panelPickup.style.display   = 'none';
+        if (shippingNote) shippingNote.textContent = '+ Ongkir dikonfirmasi admin';
+    } else {
+        panelDelivery.style.display = 'none';
+        panelPickup.style.display   = 'block';
+        if (shippingNote) shippingNote.textContent = '+ Gratis (ambil di toko)';
+    }
+    lucide.createIcons();
+};
+
+window.submitCheckout = function(e) {
+    e.preventDefault();
+    const nama    = document.getElementById('co_nama').value.trim();
+    const wa      = document.getElementById('co_wa').value.trim();
+    const method  = currentDeliveryMethod;
+    const mapsLink = method === 'delivery' ? document.getElementById('co_maps').value.trim() : '';
+    const catatan  = method === 'delivery'
+        ? document.getElementById('co_catatan').value.trim()
+        : document.getElementById('co_catatan_pickup').value.trim();
+
+    // Reset semua error
+    ['nama', 'wa', 'maps'].forEach(f => {
+        const err = document.getElementById('err_' + f);
+        const inp = document.getElementById('co_' + f);
+        if (err) err.textContent = '';
+        if (inp) inp.classList.remove('co-error');
+    });
+
+    let valid = true;
+    if (!nama) {
+        document.getElementById('err_nama').textContent = 'Nama wajib diisi';
+        document.getElementById('co_nama').classList.add('co-error');
+        valid = false;
+    }
+    if (!wa) {
+        document.getElementById('err_wa').textContent = 'No. WhatsApp wajib diisi';
+        document.getElementById('co_wa').classList.add('co-error');
+        valid = false;
+    } else if (!/^(\+62|62|0)[0-9]{8,12}$/.test(wa.replace(/[\s-]/g, ''))) {
+        document.getElementById('err_wa').textContent = 'Format nomor tidak valid (cth: 081234...)';
+        document.getElementById('co_wa').classList.add('co-error');
+        valid = false;
+    }
+    // Validasi Maps hanya jika metode = delivery
+    if (method === 'delivery') {
+        if (!mapsLink) {
+            document.getElementById('err_maps').textContent = 'Mohon isi link Google Maps lokasi kamu';
+            document.getElementById('co_maps').classList.add('co-error');
+            valid = false;
+        } else if (!/(maps\.google|goo\.gl|maps\.app|google\.com\/maps)/.test(mapsLink)) {
+            document.getElementById('err_maps').textContent = 'Link tidak valid. Gunakan link dari Google Maps';
+            document.getElementById('co_maps').classList.add('co-error');
+            valid = false;
+        }
+    }
+    if (!valid) return;
+
+    // Loading state
+    const btn = document.getElementById('checkoutSubmitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="co-spinner"></span><span>Menghubungkan ke WhatsApp...</span>';
+
+    setTimeout(() => {
+        const msg = generateWhatsAppMessage({ nama, wa, method, mapsLink, catatan });
+        window.open('https://wa.me/' + WA_PHONE + '?text=' + encodeURIComponent(msg), '_blank');
+
+        // Reset cart & form
+        cart = [];
+        saveCart();
+        updateCartUI();
+        updateFloatingBtn();
+        document.getElementById('checkoutForm').reset();
+        closeCheckout();
+
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="send"></i><span>Kirim ke WhatsApp</span>';
+        lucide.createIcons();
+
+        if (window.showStoreToast) window.showStoreToast('Pesanan berhasil dikirim! Cek WhatsApp kamu 🎉', 'success');
+    }, 800);
+};
+
+function generateWhatsAppMessage({ nama, wa, method, mapsLink, catatan }) {
+    const total = cart.reduce((s, i) => s + i.harga * i.qty, 0);
+    let msg = 'Halo Vape AH! 👋\n\n';
+    msg += 'Saya ingin order:\n';
+    msg += '━━━━━━━━━━━━━━━━━━\n';
+    cart.forEach(item => {
+        msg += `• ${item.nama}\n  ${item.qty} pcs × ${formatRupiah(item.harga)} = ${formatRupiah(item.harga * item.qty)}\n`;
+    });
+    msg += '━━━━━━━━━━━━━━━━━━\n';
+    msg += `💰 Total Produk: ${formatRupiah(total)}\n`;
+
+    if (method === 'delivery') {
+        msg += `🚚 Ongkir: Menyusul (konfirmasi admin)\n\n`;
+        msg += `📦 Metode: Kirim ke alamat\n`;
+        msg += `📍 Lokasi saya:\n${mapsLink}\n`;
+    } else {
+        msg += `🏪 Metode: Ambil di toko (GRATIS)\n`;
+        msg += `📍 Lokasi toko:\nhttps://maps.app.goo.gl/Nzx9E5f5emWtbDV57\n`;
+    }
+
+    msg += `\n📋 Data Pemesan:\n`;
+    msg += `Nama   : ${nama}\n`;
+    msg += `No. HP : ${wa}\n`;
+    if (catatan) msg += `Catatan: ${catatan}\n`;
+    msg += '\nMohon segera diproses ya kak, terima kasih! 🙏';
+    return msg;
 }
+
+function updateFloatingBtn() {
+    const btn = document.getElementById('floatingWABtn');
+    const txt = document.getElementById('floatingWAText');
+    if (!btn) return;
+    const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+    if (totalQty > 0) {
+        txt.textContent = `Keranjang (${totalQty})`;
+        btn.style.boxShadow = '0 0 20px rgba(255,42,42,0.8)';
+    } else {
+        txt.textContent = 'Order WA';
+        btn.style.boxShadow = 'var(--neon-red-glow)';
+    }
+}
+
+window.handleFloatingCTA = function() {
+    if (cart.length > 0) {
+        toggleCart();
+    } else {
+        window.open('https://wa.me/' + WA_PHONE, '_blank');
+    }
+};
 
 /**
  * Filter and Search Logic
