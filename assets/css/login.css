@@ -1,13 +1,12 @@
 /* Design System Alignment with index.html */
 :root {
     --bg-dark: #0a0a0a;
-    --primary-blue: #00cfff;
-    --primary-purple: #7a5cff;
+    --primary-red: #ff2a2a;
+    --primary-red-dark: #cc0000;
     --text-white: #ffffff;
     --text-gray: #a0a0a0;
-    --neon-blue-glow: 0 0 10px rgba(0, 207, 255, 0.5), 0 0 20px rgba(0, 207, 255, 0.3);
-    --neon-purple-glow: 0 0 10px rgba(122, 92, 255, 0.5), 0 0 20px rgba(122, 92, 255, 0.3);
-    --gradient-main: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+    --neon-red-glow: 0 0 12px rgba(255, 42, 42, 0.6);
+    --gradient-main: linear-gradient(135deg, var(--primary-red), var(--primary-red-dark));
     --glass-bg: rgba(255, 255, 255, 0.03);
     --glass-border: rgba(255, 255, 255, 0.08);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -23,8 +22,8 @@
 body {
     background-color: var(--bg-dark);
     background-image: 
-        radial-gradient(circle at 20% 30%, rgba(0, 207, 255, 0.05) 0%, transparent 40%),
-        radial-gradient(circle at 80% 70%, rgba(122, 92, 255, 0.05) 0%, transparent 40%);
+        radial-gradient(circle at 20% 30%, rgba(255, 42, 42, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(204, 0, 0, 0.05) 0%, transparent 40%);
     color: var(--text-white);
     min-height: 100vh;
     display: flex;
@@ -126,7 +125,7 @@ body::before {
     position: absolute;
     left: 15px;
     width: 18px;
-    color: var(--primary-blue);
+    color: var(--primary-red);
     opacity: 0.7;
 }
 
@@ -144,8 +143,8 @@ input {
 
 input:focus {
     background: rgba(255, 255, 255, 0.08);
-    border-color: var(--primary-blue);
-    box-shadow: var(--neon-blue-glow);
+    border-color: var(--primary-red);
+    box-shadow: var(--neon-red-glow);
 }
 
 /* Button Alignment with btn-primary */
@@ -164,13 +163,13 @@ input:focus {
     align-items: center;
     gap: 10px;
     transition: var(--transition);
-    box-shadow: 0 4px 15px rgba(0, 207, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 42, 42, 0.3);
     margin-top: 10px;
 }
 
 .login-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(122, 92, 255, 0.5);
+    box-shadow: var(--neon-red-glow);
 }
 
 .login-btn:disabled {

@@ -69,9 +69,10 @@
                 <span id="cartTotal" class="text-neon">Rp 0</span>
             </div>
             <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="checkoutWhatsApp()">
-                <i data-lucide="message-circle"></i>
-                Pesan via WhatsApp
+                <i data-lucide="shopping-bag"></i>
+                Checkout Sekarang
             </button>
+            <p style="text-align: center; font-size: 0.8rem; color: var(--text-gray); margin-top: 10px;">Checkout cepat via WhatsApp</p>
         </div>
     </div>
 
@@ -80,24 +81,37 @@
         <div class="container">
             <div class="hero-grid">
                 <div class="hero-image-container fade-in">
-                    <img src="assets/images/hero_vape_device_1777533836728.png" alt="Vape Device" class="hero-image">
+                    <img src="assets/images/12.png" alt="Vape Device" class="hero-image">
                 </div>
                 <div class="hero-content fade-in reveal" style="animation-delay: 0.2s">
-                    <p class="hero-sub">Vape AH - Your Daily Cloud Partner</p>
-                    <h1 class="hero-title">EVOLVE <br> YOUR <span class="text-neon">VAPE</span></h1>
-                    <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;justify-content: flex-start;">
+                    <p class="hero-sub" style="color: var(--primary-red);">Liquid & device ready. Order cepat, langsung kirim.</p>
+                    <h1 class="hero-title" style="font-size: clamp(2.5rem, 6vw, 4.5rem);">BUTUH <span class="text-neon">VAPE?</span><br>GAS SEKARANG.</h1>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: flex-start;">
                         <a href="#products" class="btn btn-primary">
-                            Shop Now
-                            <i data-lucide="arrow-right"></i>
+                            <i data-lucide="package"></i>
+                            Lihat Produk
                         </a>
-                        <a href="#" class="btn btn-outline">
-                            Our Story
+                        <a href="https://wa.me/6281313362467" target="_blank" class="btn btn-outline" style="border-color: var(--glass-border); background: rgba(18,18,18,0.8);">
+                            <i data-lucide="message-circle"></i>
+                            Order via WhatsApp
                         </a>
                     </div>
                 </div>
             </div>
         </div>
     </header>
+
+    <!-- Trust Booster -->
+    <div class="container reveal" style="margin-top: 30px; margin-bottom: 50px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); padding: 12px 24px; border-radius: 50px; border: 1px solid var(--glass-border);">
+            <i data-lucide="star" style="color: #ffd700; fill: #ffd700; width: 18px; height: 18px;"></i>
+            <span style="font-weight: 500; font-size: 0.9rem;">Sudah dipercaya 100+ customer</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); padding: 12px 24px; border-radius: 50px; border: 1px solid var(--glass-border);">
+            <i data-lucide="zap" style="color: var(--primary-red); fill: var(--primary-red); width: 18px; height: 18px;"></i>
+            <span style="font-weight: 500; font-size: 0.9rem;">Fast response & pengiriman cepat</span>
+        </div>
+    </div>
 
     <!-- Search & Filters -->
     <div class="container">
@@ -122,16 +136,25 @@
         </div>
     </section>
 
-    <!-- About Section -->
-    <section class="container glass reveal" style="border-radius: 40px; text-align: center; margin-bottom: 80px;">
-        <div style="max-width: 700px; margin: 0 auto; padding: 40px;">
-            <div class="text-neon" style="margin-bottom: 20px;">
-                <i data-lucide="info" style="width: 48px; height: 48px;"></i>
+    <!-- Trust Section -->
+    <section class="container glass reveal" style="border-radius: 40px; text-align: center; margin-bottom: 80px; padding: 40px;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 40px;">Kenapa Pilih <span class="text-neon">Vape AH?</span></h2>
+        <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px; padding: 20px;">
+                <i data-lucide="shield-check" class="text-neon" style="width: 48px; height: 48px; margin-bottom: 15px;"></i>
+                <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Produk Original</h3>
+                <p style="color: var(--text-gray);">Dijamin 100% authentic dari distributor resmi.</p>
             </div>
-            <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Tentang Vape AH</h2>
-            <p style="color: var(--text-gray); font-size: 1.1rem;">
-                Vape AH adalah destinasi terpercaya untuk semua kebutuhan vaping Anda. Kami menyediakan koleksi device terbaru dan e-liquid premium dengan kualitas terbaik untuk meningkatkan pengalaman vaping Anda ke level selanjutnya.
-            </p>
+            <div style="flex: 1; min-width: 250px; padding: 20px;">
+                <i data-lucide="zap" class="text-neon" style="width: 48px; height: 48px; margin-bottom: 15px;"></i>
+                <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Fast Response</h3>
+                <p style="color: var(--text-gray);">Admin tanggap siap membantu Anda via WhatsApp.</p>
+            </div>
+            <div style="flex: 1; min-width: 250px; padding: 20px;">
+                <i data-lucide="truck" class="text-neon" style="width: 48px; height: 48px; margin-bottom: 15px;"></i>
+                <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Pengiriman Cepat</h3>
+                <p style="color: var(--text-gray);">Order hari ini, kami langsung proses kirim hari ini.</p>
+            </div>
         </div>
     </section>
 
@@ -184,8 +207,12 @@
                 <h3 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 15px;">Temukan Vape Favoritmu Sekarang</h3>
                 <p style="margin-bottom: 30px; opacity: 0.9;">Jelajahi koleksi premium kami dan nikmati pengalaman vaping terbaik.</p>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                    <a href="#products" class="btn glass" style="background: rgba(255,255,255,0.15);">Lihat Produk</a>
-                    <a href="#" class="btn btn-primary" style="background: white; color: var(--primary-purple);">Order Sekarang</a>
+                    <a href="#products" class="btn btn-primary" style="background: var(--gradient-main);">
+                        Lihat Produk
+                    </a>
+                    <a href="https://wa.me/6281313362467" target="_blank" class="btn btn-outline" style="border-color: var(--glass-border); background: rgba(10,10,10,0.8); color: white;">
+                        Order via WhatsApp
+                    </a>
                 </div>
             </div>
         </div>
@@ -211,6 +238,12 @@
     <!-- Back to Top -->
     <a href="#" class="back-to-top" id="backToTop" aria-label="Back to Top">
         <i data-lucide="arrow-up"></i>
+    </a>
+
+    <!-- Floating WhatsApp CTA -->
+    <a href="https://wa.me/6281313362467" target="_blank" style="position: fixed; bottom: 20px; right: 20px; z-index: 9998; background: var(--primary-red); color: white; padding: 12px 24px; border-radius: 50px; display: flex; align-items: center; gap: 10px; font-weight: 600; box-shadow: var(--neon-red-glow); text-decoration: none; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1.05)'">
+        <i data-lucide="message-circle"></i>
+        <!-- <span></span> -->
     </a>
 
     <script src="assets/js/animations.js"></script>

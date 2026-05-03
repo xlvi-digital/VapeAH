@@ -9,8 +9,8 @@
 }
 
 .card:hover {
-    border-color: var(--primary-cyan);
-    box-shadow: var(--neon-cyan-glow);
+    border-color: var(--primary-red);
+    box-shadow: var(--neon-red-glow);
 }
 
 .card-title {
@@ -20,7 +20,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    color: var(--primary-cyan);
+    color: var(--primary-red);
 }
 
 /* Stats Grid */
@@ -45,12 +45,12 @@
     width: 55px;
     height: 55px;
     border-radius: 16px;
-    background: rgba(0, 209, 255, 0.1);
+    background: rgba(255, 42, 42, 0.1);
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 1.4rem;
-    color: var(--primary-cyan);
+    color: var(--primary-red);
 }
 
 /* Form Styling */
@@ -89,10 +89,35 @@ input, select, textarea {
     outline: none;
 }
 
+select {
+    background-color: #111111;
+    color: #ffffff;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a0a0a0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+}
+
+select option {
+    background-color: #111111;
+    color: #ffffff;
+    padding: 10px;
+}
+
+select option:hover,
+select option:focus,
+select option:checked {
+    background-color: var(--primary-red);
+    color: #ffffff;
+}
+
 input:focus, select:focus, textarea:focus {
-    border-color: var(--primary-cyan);
-    background: rgba(0, 209, 255, 0.02);
-    box-shadow: 0 0 0 1px var(--primary-cyan), 0 0 10px rgba(0, 209, 255, 0.2);
+    border-color: var(--primary-red);
+    background: rgba(255, 42, 42, 0.02);
+    box-shadow: 0 0 0 1px var(--primary-red), 0 0 10px rgba(255, 42, 42, 0.2);
 }
 
 /* File Input Premium */
@@ -133,19 +158,19 @@ input:focus, select:focus, textarea:focus {
 }
 
 .file-input-wrapper input:focus + .file-custom {
-    border-color: var(--primary-cyan);
-    box-shadow: var(--neon-cyan-glow);
-    background: rgba(0, 209, 255, 0.02);
+    border-color: var(--primary-red);
+    box-shadow: var(--neon-red-glow);
+    background: rgba(255, 42, 42, 0.02);
 }
 
 .file-input-wrapper input:hover + .file-custom {
-    border-color: var(--primary-cyan);
+    border-color: var(--primary-red);
 }
 
 /* Buttons */
 .btn-action {
     padding: 16px 32px;
-    background: var(--gradient-neon);
+    background: var(--gradient-main);
     color: white;
     border: none;
     border-radius: 14px;
@@ -156,7 +181,7 @@ input:focus, select:focus, textarea:focus {
     display: inline-flex;
     align-items: center;
     gap: 12px;
-    box-shadow: 0 4px 20px rgba(0, 209, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(255, 42, 42, 0.3);
 }
 
 .btn-action:hover {
@@ -183,21 +208,21 @@ input:focus, select:focus, textarea:focus {
 }
 
 .drop-zone.active {
-    border-color: var(--primary-cyan);
-    background: rgba(0, 209, 255, 0.05);
-    box-shadow: var(--neon-cyan-glow);
+    border-color: var(--primary-red);
+    background: rgba(255, 42, 42, 0.05);
+    box-shadow: var(--neon-red-glow);
 }
 
 .drop-zone i {
     font-size: 3.5rem;
-    color: var(--primary-cyan);
+    color: var(--primary-red);
     margin-bottom: 20px;
     transition: var(--transition);
 }
 
 .drop-zone.active i {
     transform: scale(1.1);
-    filter: drop-shadow(0 0 10px var(--primary-cyan));
+    filter: drop-shadow(0 0 10px var(--primary-red));
 }
 
 /* Live Preview */
@@ -234,7 +259,7 @@ input:focus, select:focus, textarea:focus {
 .modern-table th {
     padding: 15px;
     border-bottom: 2px solid var(--glass-border);
-    color: var(--primary-cyan);
+    color: var(--primary-red);
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -272,7 +297,7 @@ input:focus, select:focus, textarea:focus {
     background: rgba(255, 255, 255, 0.05);
 }
 
-.btn-edit:hover { color: var(--primary-cyan); border-color: var(--primary-cyan); }
+.btn-edit:hover { color: var(--primary-red); border-color: var(--primary-red); }
 .btn-delete:hover { color: #ff4d4d; border-color: #ff4d4d; }
 
 .btn-outline {
@@ -283,9 +308,9 @@ input:focus, select:focus, textarea:focus {
 }
 
 .btn-outline:hover {
-    border-color: var(--primary-cyan);
-    color: var(--primary-cyan);
-    box-shadow: 0 0 10px rgba(0, 209, 255, 0.2);
+    border-color: var(--primary-red);
+    color: var(--primary-red);
+    box-shadow: 0 0 10px rgba(255, 42, 42, 0.2);
 }
 
 /* Fix Preview Table Desktop */
@@ -299,7 +324,7 @@ input:focus, select:focus, textarea:focus {
     background: rgba(255, 255, 255, 0.02);
     padding: 18px 15px;
     text-align: left;
-    color: var(--primary-cyan);
+    color: var(--primary-red);
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -317,7 +342,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 #previewTable tbody tr:hover {
-    background: rgba(0, 209, 255, 0.02);
+    background: rgba(255, 42, 42, 0.02);
 }
 
 /* Header Left Flex */
@@ -369,8 +394,8 @@ input:focus, select:focus, textarea:focus {
     }
 
     .modern-table tr:hover, #previewTable tr:hover {
-        border-color: var(--primary-cyan);
-        box-shadow: var(--neon-cyan-glow);
+        border-color: var(--primary-red);
+        box-shadow: var(--neon-red-glow);
     }
 
     .modern-table td, #previewTable td {
@@ -460,8 +485,8 @@ input:focus, select:focus, textarea:focus {
     max-width: 700px;
     max-height: 90vh; /* Ensure modal doesn't exceed screen height */
     background: rgba(18, 18, 18, 0.95) !important;
-    border: 1px solid var(--primary-cyan) !important;
-    box-shadow: 0 0 50px rgba(0, 209, 255, 0.15);
+    border: 1px solid var(--primary-red) !important;
+    box-shadow: 0 0 50px rgba(255, 42, 42, 0.15);
     border-radius: 24px;
     padding: 30px;
     position: relative;

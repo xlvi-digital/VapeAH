@@ -71,13 +71,22 @@ function renderProducts(products) {
 
     productGrid.innerHTML = products.map((p, index) => `
         <div class="product-card fade-in reveal" style="animation-delay: ${index * 0.05}s">
-            <span class="product-category">${p.kategori || 'General'}</span>
+            <span class="product-category" style="${index < 2 ? 'background: #cc0000;' : ''}">${index < 2 ? '🔥 HOT' : p.kategori || 'General'}</span>
             <img src="${p.gambar || 'https://via.placeholder.com/400'}" alt="${p.nama}" class="product-image" loading="lazy">
             <h3 class="product-name">${p.nama}</h3>
-            <p class="product-price">${formatRupiah(p.harga)}</p>
-            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="addToCart('${p.id}', '${p.nama}', ${p.harga}, '${p.gambar}')">
-                <i data-lucide="shopping-cart"></i>
-                Add to Cart
+            <p class="product-price" style="color: var(--primary-red); font-size: 1.3rem;">${formatRupiah(p.harga)}</p>
+            <div style="font-size: 0.8rem; color: var(--text-gray); margin-bottom: 15px; border-top: 1px solid var(--glass-border); padding-top: 10px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span style="display: flex; align-items: center; gap: 4px; color: #ffd700;"><i data-lucide="star" style="width: 14px; height: 14px; fill: #ffd700;"></i> 4.8</span>
+                    <span style="color: var(--primary-red); font-weight: 600;">Terjual 120+</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <i data-lucide="check-circle" style="width: 14px; height: 14px; color: #00ffcc;"></i> Stok tersedia &bull; Siap kirim hari ini
+                </div>
+            </div>
+            <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 14px 20px;" onclick="addToCart('${p.id}', '${p.nama}', ${p.harga}, '${p.gambar}')">
+                <i data-lucide="shopping-bag"></i>
+                Beli Sekarang
             </button>
         </div>
     `).join('');

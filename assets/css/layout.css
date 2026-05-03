@@ -5,7 +5,7 @@
 }
 
 section {
-    padding: var(--section-padding) 0 !important;
+    padding: 60px 5% !important;
 }
 
 /* Navbar */
@@ -63,7 +63,7 @@ nav.scrolled {
 }
 
 .nav-links a:hover {
-    color: var(--primary-blue);
+    color: var(--primary-red);
 }
 
 .nav-links a:hover::after {
@@ -91,8 +91,8 @@ nav.scrolled {
 }
 
 .cart-icon-wrapper:hover {
-    border-color: var(--primary-blue);
-    background: rgba(0, 207, 255, 0.05);
+    border-color: var(--primary-red);
+    background: rgba(255, 42, 42, 0.05);
     transform: scale(1.1);
 }
 
@@ -110,7 +110,7 @@ nav.scrolled {
     display: none; /* Hidden if 0 */
     justify-content: center;
     align-items: center;
-    box-shadow: var(--neon-blue-glow);
+    box-shadow: var(--neon-red-glow);
 }
 
 .hamburger {
@@ -209,7 +209,7 @@ nav.scrolled {
 .hero-image {
     max-width: 100%;
     height: auto;
-    filter: drop-shadow(0 0 30px rgba(0, 207, 255, 0.3));
+    filter: drop-shadow(0 0 30px rgba(255, 42, 42, 0.3));
     animation: float 6s ease-in-out infinite;
 }
 
@@ -258,7 +258,7 @@ footer {
 }
 
 .footer-nav a:hover {
-    color: var(--primary-blue);
+    color: var(--primary-red);
 }
 
 /* Floating Elements */

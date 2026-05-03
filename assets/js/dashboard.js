@@ -79,11 +79,29 @@ window.showLoading = (msg) => {
 window.hideLoading = () => document.getElementById('loadingOverlay').classList.remove('active');
 
 window.showToast = (msg, type = 'success') => {
+    // Ambil atau buat container yang sudah fix di pojok layar
+    let container = document.getElementById('dash-toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'dash-toast-container';
+        document.body.appendChild(container);
+    }
+
+    const icon = type === 'success'
+        ? `<svg class="dash-toast-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+        : `<svg class="dash-toast-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+
     const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.innerText = msg;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
+    toast.className = `dash-toast ${type}`;
+    toast.innerHTML = `${icon}<span class="dash-toast-msg">${msg}</span>`;
+    container.appendChild(toast);
+
+    // Auto dismiss
+    const dismiss = () => {
+        toast.classList.add('hide');
+        toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    };
+    setTimeout(dismiss, 3000);
 };
 
 let confirmCallback = null;
@@ -136,7 +154,10 @@ function renderProductList(products) {
         return;
     }
 
-    tbody.innerHTML = products.map(p => `
+    // Tampilkan produk terbaru (baris terbawah di Sheet) di urutan paling atas
+    const sorted = [...products].reverse();
+
+    tbody.innerHTML = sorted.map(p => `
         <tr>
             <td><img src="${p.gambar}" style="width:40px; height:40px; object-fit:cover; border-radius:8px;"></td>
             <td style="font-weight:500;">${p.nama}</td>
@@ -152,7 +173,7 @@ function renderProductList(products) {
     `).join('');
 
     if (mobileList) {
-        mobileList.innerHTML = products.map(p => `
+        mobileList.innerHTML = sorted.map(p => `
             <div class="card" style="margin-bottom:15px;">
                 <div style="display:flex; gap:15px; align-items:center;">
                     <img src="${p.gambar}" style="width:60px; height:60px; border-radius:12px; object-fit:cover;">
@@ -249,7 +270,11 @@ window.openEditModal = function(id) {
                 if (product) {
                     document.getElementById('edit_id').value = product.id;
                     document.getElementById('edit_nama').value = product.nama;
-                    document.getElementById('edit_harga').value = product.harga;
+                    // Set raw value and format untuk input harga
+                    const hargaInput = document.getElementById('edit_harga');
+                    const rawHarga = String(product.harga).replace(/\D/g, '');
+                    hargaInput.dataset.raw = rawHarga;
+                    hargaInput.value = rawHarga ? 'Rp ' + Number(rawHarga).toLocaleString('id-ID') : '';
                     document.getElementById('edit_kategori').value = product.kategori;
                     document.getElementById('edit_deskripsi').value = product.deskripsi;
                     document.getElementById('editImagePreview').innerHTML = `<img src="${product.gambar}" style="width:100%; height:100%; object-fit:contain; border-radius:12px;">`;
@@ -395,6 +420,79 @@ if (bulkSubmitBtn) {
 function formatRupiah(n) {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
 }
+
+/**
+ * Auto-format harga input menjadi format Rupiah dengan titik ribuan.
+ * Input tipenya text karena akan diformat, nilai mentahnya disimpan di data-raw.
+ */
+function setupPriceInputFormatter(inputId) {
+    const el = document.getElementById(inputId);
+    if (!el) return;
+
+    // Ganti type ke text agar bisa diformat
+    el.type = 'text';
+    el.inputMode = 'numeric';
+    el.setAttribute('autocomplete', 'off');
+
+    el.addEventListener('input', function () {
+        // Hapus semua karakter non-angka
+        const raw = this.value.replace(/\D/g, '');
+        this.dataset.raw = raw;
+        if (raw === '') {
+            this.value = '';
+            return;
+        }
+        // Format pakai titik sebagai pemisah ribuan
+        this.value = 'Rp ' + Number(raw).toLocaleString('id-ID');
+    });
+
+    el.addEventListener('focus', function () {
+        // Saat fokus, tampilkan angka mentah agar mudah diedit
+        const raw = this.dataset.raw || this.value.replace(/\D/g, '');
+        this.value = raw;
+    });
+
+    el.addEventListener('blur', function () {
+        // Saat blur, format kembali
+        const raw = this.value.replace(/\D/g, '');
+        this.dataset.raw = raw;
+        if (raw === '') { this.value = ''; return; }
+        this.value = 'Rp ' + Number(raw).toLocaleString('id-ID');
+    });
+}
+
+setupPriceInputFormatter('harga_produk');
+setupPriceInputFormatter('edit_harga');
+
+// Patch simpanProdukKeSheet & updateProduk agar baca nilai mentah
+(function patchHargaValues() {
+    const origSimpan = window.simpanProdukKeSheet;
+    window.simpanProdukKeSheet = async function(e) {
+        const el = document.getElementById('harga_produk');
+        if (el) {
+            const raw = el.dataset.raw || el.value.replace(/\D/g, '');
+            el._formatted = el.value;
+            el.value = raw;
+            await origSimpan(e);
+            el.value = el._formatted || '';
+        } else {
+            await origSimpan(e);
+        }
+    };
+    const origUpdate = window.updateProduk;
+    window.updateProduk = async function(e) {
+        const el = document.getElementById('edit_harga');
+        if (el) {
+            const raw = el.dataset.raw || el.value.replace(/\D/g, '');
+            el._formatted = el.value;
+            el.value = raw;
+            await origUpdate(e);
+            el.value = el._formatted || '';
+        } else {
+            await origUpdate(e);
+        }
+    };
+})();
 
 // Set Date
 const d = new Date();

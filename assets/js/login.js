@@ -29,7 +29,7 @@ function showStatus(message, isError = false) {
     if (!statusEl) return;
     
     statusEl.textContent = message;
-    statusEl.style.color = isError ? '#ff4d4d' : '#00cfff';
+    statusEl.style.color = isError ? '#ff4d4d' : '#00ffcc';
     statusEl.style.opacity = '1';
     
     // Sembunyikan otomatis setelah 5 detik jika sukses
