@@ -240,8 +240,10 @@ window.checkoutWhatsApp = function() {
  */
 function applyFilters() {
     filteredProducts = allProducts.filter(p => {
-        const matchesCategory = currentCategory === 'All' || p.kategori === currentCategory;
-        const matchesSearch = p.nama.toLowerCase().includes(searchQuery.toLowerCase());
+        const productKategori = (p.kategori || '').trim().toLowerCase();
+        const selectedKategori = currentCategory.trim().toLowerCase();
+        const matchesCategory = currentCategory === 'All' || productKategori === selectedKategori;
+        const matchesSearch = (p.nama || '').toLowerCase().includes(searchQuery.toLowerCase());
         return matchesCategory && matchesSearch;
     });
     renderProducts(filteredProducts);
