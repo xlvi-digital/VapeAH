@@ -367,6 +367,54 @@
         </div>
     </div>
 
+    <!-- Product Detail Modal -->
+    <div id="productDetailModal" class="product-detail-modal" role="dialog" aria-modal="true">
+        <div class="product-detail-overlay" onclick="closeProductDetail()"></div>
+        <div class="product-detail-sheet glass">
+            <div class="product-detail-handle"></div>
+            <div class="product-detail-header">
+                <button class="product-detail-close-btn" onclick="closeProductDetail()" aria-label="Tutup">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            
+            <div class="product-detail-body">
+                <div class="product-detail-image-wrapper">
+                    <img id="pd_image" src="" alt="Product Image" class="product-detail-image">
+                    <span id="pd_category" class="product-detail-category"></span>
+                </div>
+                
+                <div class="product-detail-info">
+                    <h2 id="pd_name" class="product-detail-name"></h2>
+                    <p id="pd_price" class="product-detail-price"></p>
+                    
+                    <div class="product-detail-stats">
+                        <div class="stat-item">
+                            <i data-lucide="star" style="color: #ffd700; fill: #ffd700;"></i>
+                            <span>4.8 (120+ Terjual)</span>
+                        </div>
+                        <div class="stat-item">
+                            <i data-lucide="check-circle" style="color: #00ffcc;"></i>
+                            <span>Stok Ready</span>
+                        </div>
+                    </div>
+                    
+                    <div class="product-detail-description">
+                        <h3>Deskripsi Produk</h3>
+                        <p id="pd_description"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="product-detail-footer">
+                <button id="pd_add_btn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 16px;">
+                    <i data-lucide="shopping-bag"></i>
+                    Tambah ke Keranjang
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="assets/js/animations.js"></script>
     <script src="assets/js/app.js"></script>
     <script>

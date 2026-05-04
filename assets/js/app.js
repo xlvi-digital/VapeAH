@@ -73,11 +73,11 @@ function renderProducts(products) {
     productGrid.innerHTML = products.map((p, index) => `
         <div class="product-card fade-in reveal" style="animation-delay: ${index * 0.05}s">
             <span class="product-category" style="${index < 2 ? 'background: #cc0000;' : ''}">${index < 2 ? '🔥 HOT' : p.kategori || 'General'}</span>
-            <img src="${p.gambar || 'https://via.placeholder.com/400'}" alt="${p.nama}" class="product-image" loading="lazy">
-            <h3 class="product-name">${p.nama}</h3>
+            <img src="${p.gambar || 'https://via.placeholder.com/400'}" alt="${p.nama}" class="product-image" loading="lazy" onclick="openProductDetail('${p.id}')" style="cursor: pointer;">
+            <h3 class="product-name" onclick="openProductDetail('${p.id}')" style="cursor: pointer;">${p.nama}</h3>
             <p class="product-price" style="color: var(--primary-red); font-size: 1.3rem;">${formatRupiah(p.harga)}</p>
             <div style="font-size: 0.8rem; color: var(--text-gray); margin-bottom: 15px; border-top: 1px solid var(--glass-border); padding-top: 10px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <div style="display: flex; justify-content: space-between; flex-direction: column; margin-bottom: 5px;">
                     <span style="display: flex; align-items: center; gap: 4px; color: #ffd700;"><i data-lucide="star" style="width: 14px; height: 14px; fill: #ffd700;"></i> 4.8</span>
                     <span style="color: var(--primary-red); font-weight: 600;">Terjual 120+</span>
                 </div>
@@ -265,6 +265,43 @@ window.openCheckout = function() {
 
 window.closeCheckout = function() {
     document.getElementById('checkoutModal').classList.remove('active');
+    document.body.style.overflow = '';
+};
+
+/**
+ * Product Detail Modal Logic
+ */
+window.openProductDetail = function(id) {
+    const p = allProducts.find(item => item.id === id);
+    if (!p) return;
+
+    const modal = document.getElementById('productDetailModal');
+    const image = document.getElementById('pd_image');
+    const category = document.getElementById('pd_category');
+    const name = document.getElementById('pd_name');
+    const price = document.getElementById('pd_price');
+    const description = document.getElementById('pd_description');
+    const addBtn = document.getElementById('pd_add_btn');
+
+    image.src = p.gambar || 'https://via.placeholder.com/400';
+    category.textContent = p.kategori || 'General';
+    name.textContent = p.nama;
+    price.textContent = formatRupiah(p.harga);
+    description.textContent = p.deskripsi || 'Tidak ada deskripsi untuk produk ini.';
+    
+    addBtn.onclick = () => {
+        addToCart(p.id, p.nama, p.harga, p.gambar);
+        closeProductDetail();
+    };
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    lucide.createIcons();
+};
+
+window.closeProductDetail = function() {
+    const modal = document.getElementById('productDetailModal');
+    modal.classList.remove('active');
     document.body.style.overflow = '';
 };
 

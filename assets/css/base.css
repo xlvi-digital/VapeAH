@@ -103,7 +103,7 @@ body::before {
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     text-decoration: none;
     white-space: nowrap;
 }
